@@ -22,7 +22,7 @@ class MultiplyMatrices
             for ($k = 0; $k < $columns; $k++) {
                 $transformed = $this->transformColumns($k, $matrixB);
 
-                $result[$row][$k] = 0; // initialise 
+                $result[$row][$k] = 0; // initialise
 
                 foreach ($transformed as $index => $item) {
                     $result[$row][$k] += $currentRow[$index] * $item;
@@ -72,25 +72,42 @@ class MultiplyMatrices
     }
 
     /**
-     * Get the validation rules that apply to the use case.
+     * Get the validation rules that apply to action
      *
      * @return array
      */
     public function rules(): array
     {
         return [
-            'matrix_a' => ['required', 'array'],
-            'matrix_a.*' => ['required', 'array'],
-            'matrix_a.*.*' => ['required', 'integer', 'gt:0'],
-            'matrix_b' => ['required', 'array', new ValidMatrices()],
-            'matrix_b.*' => ['required', 'array'],
+            'matrix_a' => ['required', 'array', 'max:50'], // row
+            'matrix_a.*' => ['required', 'array', 'max:50'], // column
+            'matrix_a.*.*' => ['required', 'integer', 'gt:0'], // value
+            'matrix_b' => ['required', 'array', 'max:50', new ValidMatrices()],
+            'matrix_b.*' => ['required', 'array','max:50'],
             'matrix_b.*.*' => ['required', 'integer', 'gt:0'],
         ];
     }
 
+    /**
+     * Get the custom messages for the rules
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'matrix_a.max' => "The Matrix A must not have more than :max rows.",
+            'matrix_a.*.max' => "The Matrix A must not have more than :max columns.",
+
+            'matrix_b.max' => "The Matrix B must not have more than :max rows.",
+            'matrix_b.*.max' => "The Matrix B field must not have more than :max columns.",
+        ];
+    }
+
+
     public function validate(array $data): array
     {
-        return Validator::make($data, $this->rules())
+        return Validator::make($data, $this->rules(), $this->messages())
             ->validate();
     }
 }

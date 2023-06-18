@@ -10,7 +10,6 @@ class MultiplyMatricesTest extends TestCase
 {
     protected $validTestCases;
     protected $charactersAsResultTestCases;
-    protected $invalidTestCases;
 
     protected function setUp(): void
     {
@@ -113,39 +112,6 @@ class MultiplyMatricesTest extends TestCase
                 ]
             ],
         ]);
-
-        $this->invalidTestCases = collect([
-            [
-                'matrix_a' => [
-                    [1, 2, 3],
-                ],
-                'matrix_b' => [
-                    [4, 7],
-                    [5, 8],
-                ],
-            ],
-            [
-                'matrix_a' => [
-                    [1, 1, 1],
-                    [1, 1],
-                ],
-                'matrix_b' => [
-                    [1, 1],
-                    [1, 1],
-                    [1, 1],
-                ],
-            ],
-            [
-                'matrix_a' => [
-                    [1, 0, 1],
-                ],
-                'matrix_b' => [
-                    [1, 1],
-                    [0, 1],
-                    [1, 1],
-                ],
-            ],
-        ]);
     }
 
     /** @test */
@@ -177,8 +143,13 @@ class MultiplyMatricesTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $multiplyMatrices->handle(
-            $this->invalidTestCases->first()['matrix_a'],
-            $this->invalidTestCases->first()['matrix_b']
+            [
+                [1, 2, 3],
+            ],
+            [
+                [4, 7],
+                [5, 8],
+            ]
         );
     }
 
@@ -189,20 +160,68 @@ class MultiplyMatricesTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $multiplyMatrices->handle(
-            $this->invalidTestCases->skip(1)->first()['matrix_a'],
-            $this->invalidTestCases->skip(1)->first()['matrix_b']
+            [
+                [1, 1, 1],
+                [1, 1],
+            ],
+            [
+                [1, 1],
+                [1, 1],
+                [1, 1],
+            ]
         );
     }
 
     /** @test */
-    public function it_throw_validation_errors_when_invalida_matrices_data_provided(): void
+    public function it_throw_validation_errors_when_invalid_matrices_data_provided(): void
     {
         $multiplyMatrices = new MultiplyMatrices();
 
         $this->expectException(ValidationException::class);
         $multiplyMatrices->handle(
-            $this->invalidTestCases->skip(2)->first()['matrix_a'],
-            $this->invalidTestCases->skip(2)->first()['matrix_b']
+            [
+                [1, 0, 1]
+            ],
+            [
+                [1, 1],
+                [0, 1],
+                [1, 1],
+            ]
+        );
+    }
+
+    /** @test */
+    public function it_throw_validation_errors_when_exceed_max_row(): void
+    {
+        $multiplyMatrices = new MultiplyMatrices();
+
+        $matrixA = collect(range(1, 51))->map(fn ($i) => [1, 1])->all();
+
+        $this->expectException(ValidationException::class);
+        $multiplyMatrices->handle(
+            $matrixA,
+            [
+                [1, 1],
+                [1, 1],
+            ]
+        );
+    }
+
+    /** @test */
+    public function it_throw_validation_errors_when_exceed_max_column(): void
+    {
+        $multiplyMatrices = new MultiplyMatrices();
+
+        $matrixA = [
+            collect(range(1, 51))->map(fn ($i) => 1)->all(),
+        ];
+
+        $matrixB = collect(range(1, 50))->map(fn ($i) => [1, 1])->all();
+
+        $this->expectException(ValidationException::class);
+        $multiplyMatrices->handle(
+            $matrixA,
+            $matrixB
         );
     }
 }

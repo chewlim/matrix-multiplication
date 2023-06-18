@@ -13,7 +13,7 @@ class MultiplyMatricesController extends Controller
     public function show(Request $request): Response
     {
         return Inertia::render('Index', [
-            
+
         ]);
     }
 
