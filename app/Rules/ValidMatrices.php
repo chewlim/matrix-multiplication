@@ -34,10 +34,10 @@ class ValidMatrices implements DataAwareRule, ValidationRule
   public function validate(string $attribute, mixed $value, Closure $fail): void
   {
     // Get first row of the Matrix A then count the column
-    $columnCountOfMatrixA = count(collect($this->data['matrixA'])->first());
+    $columnCountOfMatrixA = count(collect($this->data['matrix_a'])->first());
     
     // MatrixA: Make sure every row has the same column 
-    $hasSameColumnCount = collect($this->data['matrixA'])->every(function ($value, int $key) use ($columnCountOfMatrixA) {
+    $hasSameColumnCount = collect($this->data['matrix_a'])->every(function ($value, int $key) use ($columnCountOfMatrixA) {
         return count($value) === $columnCountOfMatrixA;
     });
 
@@ -45,7 +45,7 @@ class ValidMatrices implements DataAwareRule, ValidationRule
       $fail("Every row in matrix A must have the same column count.");
     }
 
-    $rowCountOfMatrixB = count($this->data['matrixB']);
+    $rowCountOfMatrixB = count($this->data['matrix_b']);
     
     // The column count in the first matrix should be equal to the row count of the second matrix
     if($columnCountOfMatrixA !== $rowCountOfMatrixB) {

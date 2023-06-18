@@ -9,7 +9,10 @@ class MultiplyMatrices
 {
     public function handle(array $matrixA, array $matrixB, bool $returnCharacters = false): array
     {
-        $validated = $this->validate(compact('matrixA', 'matrixB'));
+        $this->validate([
+            'matrix_a' => $matrixA,
+            'matrix_b' => $matrixB,
+        ]);
 
         $result = [];
 
@@ -36,8 +39,8 @@ class MultiplyMatrices
     protected function transformToCharacters(array $data): array
     {
         $result = [];
-        for($row = 0; $row < count($data); $row++) {
-            for($col = 0; $col < count($data[$row]); $col++) {
+        for ($row = 0; $row < count($data); $row++) {
+            for ($col = 0; $col < count($data[$row]); $col++) {
                 $result[$row][$col] = $this->getCharacters($data[$row][$col]);
             }
         }
@@ -53,7 +56,7 @@ class MultiplyMatrices
 
         $cycle = intval(($value - 1) / 26); // e.g. (32 - 1) / 26 = 1.19
 
-        if($cycle > 0) {
+        if ($cycle > 0) {
             return $this->getCharacters($cycle) . $suffixLetter;
         }
 
@@ -76,12 +79,12 @@ class MultiplyMatrices
     public function rules(): array
     {
         return [
-            'matrixA' => ['required', 'array'],
-            'matrixA.*' => ['required', 'array'],
-            'matrixA.*.*' => ['required', 'integer', 'gt:0'],
-            'matrixB' => ['required', 'array', new ValidMatrices()],
-            'matrixB.*' => ['required', 'array'],
-            'matrixB.*.*' => ['required', 'integer', 'gt:0'],
+            'matrix_a' => ['required', 'array'],
+            'matrix_a.*' => ['required', 'array'],
+            'matrix_a.*.*' => ['required', 'integer', 'gt:0'],
+            'matrix_b' => ['required', 'array', new ValidMatrices()],
+            'matrix_b.*' => ['required', 'array'],
+            'matrix_b.*.*' => ['required', 'integer', 'gt:0'],
         ];
     }
 

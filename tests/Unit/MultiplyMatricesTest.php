@@ -19,10 +19,10 @@ class MultiplyMatricesTest extends TestCase
         // setup test data
         $this->validTestCases = collect([
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [4, 7],
                     [5, 8],
                     [6, 9],
@@ -32,11 +32,11 @@ class MultiplyMatricesTest extends TestCase
                 ]
             ],
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                     [4, 5, 6],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [7, 10],
                     [8, 11],
                     [9, 12],
@@ -47,12 +47,12 @@ class MultiplyMatricesTest extends TestCase
                 ]
             ],
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                     [4, 5, 6],
                     [7, 8, 9],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [10, 13, 16,],
                     [11, 14, 17],
                     [12, 15, 18],
@@ -68,10 +68,10 @@ class MultiplyMatricesTest extends TestCase
         // setup test data
         $this->charactersAsResultTestCases = collect([
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [4, 7],
                     [5, 8],
                     [6, 9],
@@ -81,11 +81,11 @@ class MultiplyMatricesTest extends TestCase
                 ]
             ],
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                     [4, 5, 6],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [7, 10],
                     [8, 11],
                     [9, 12],
@@ -96,12 +96,12 @@ class MultiplyMatricesTest extends TestCase
                 ]
             ],
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                     [4, 5, 6],
                     [7, 8, 9],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [10, 13, 16,],
                     [11, 14, 17],
                     [12, 15, 18],
@@ -116,30 +116,30 @@ class MultiplyMatricesTest extends TestCase
 
         $this->invalidTestCases = collect([
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 2, 3],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [4, 7],
                     [5, 8],
                 ],
             ],
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 1, 1],
                     [1, 1],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [1, 1],
                     [1, 1],
                     [1, 1],
                 ],
             ],
             [
-                'matrixA' => [
+                'matrix_a' => [
                     [1, 0, 1],
                 ],
-                'matrixB' => [
+                'matrix_b' => [
                     [1, 1],
                     [0, 1],
                     [1, 1],
@@ -154,7 +154,7 @@ class MultiplyMatricesTest extends TestCase
         $multiplyMatrices = new MultiplyMatrices();
 
         $this->validTestCases->each(function ($testCase) use ($multiplyMatrices) {
-            $result = $multiplyMatrices->handle($testCase['matrixA'], $testCase['matrixB']);
+            $result = $multiplyMatrices->handle($testCase['matrix_a'], $testCase['matrix_b']);
             $this->assertEquals($testCase['expectedResult'], $result);
         });
     }
@@ -165,7 +165,7 @@ class MultiplyMatricesTest extends TestCase
         $multiplyMatrices = new MultiplyMatrices();
 
         $this->charactersAsResultTestCases->each(function ($testCase) use ($multiplyMatrices) {
-            $result = $multiplyMatrices->handle($testCase['matrixA'], $testCase['matrixB'], true);
+            $result = $multiplyMatrices->handle($testCase['matrix_a'], $testCase['matrix_b'], true);
             $this->assertEquals($testCase['expectedResult'], $result);
         });
     }
@@ -177,8 +177,8 @@ class MultiplyMatricesTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $multiplyMatrices->handle(
-            $this->invalidTestCases->first()['matrixA'],
-            $this->invalidTestCases->first()['matrixB']
+            $this->invalidTestCases->first()['matrix_a'],
+            $this->invalidTestCases->first()['matrix_b']
         );
     }
 
@@ -189,8 +189,8 @@ class MultiplyMatricesTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $multiplyMatrices->handle(
-            $this->invalidTestCases->skip(1)->first()['matrixA'],
-            $this->invalidTestCases->skip(1)->first()['matrixB']
+            $this->invalidTestCases->skip(1)->first()['matrix_a'],
+            $this->invalidTestCases->skip(1)->first()['matrix_b']
         );
     }
 
@@ -201,8 +201,8 @@ class MultiplyMatricesTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $multiplyMatrices->handle(
-            $this->invalidTestCases->skip(2)->first()['matrixA'],
-            $this->invalidTestCases->skip(2)->first()['matrixB']
+            $this->invalidTestCases->skip(2)->first()['matrix_a'],
+            $this->invalidTestCases->skip(2)->first()['matrix_b']
         );
     }
 }
