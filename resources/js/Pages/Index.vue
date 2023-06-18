@@ -105,7 +105,6 @@ const calculate = (event: Event) => {
     
     axios.post('/multiply', formData)
         .then(response => {
-            console.log(response);
             resultMatrices.items = response.data
         }).catch((error: AxiosError | Error) => {
             if (axios.isAxiosError(error)) {
