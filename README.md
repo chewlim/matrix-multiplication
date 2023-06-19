@@ -23,7 +23,7 @@
 - [x] Add request validation / ValidMatrices rule
 - [x] Display validation errors
 - [x] Display result (The resulting matrix should contain characters rather than numbers similar to excel columns. Examples: 1 => A, 26 => Z, 27 => AA, 28 => AB.)
-- [ ] Make matrices strictly type?
+- [x] Make matrices strictly type
 - [x] Unit tests
   - [x] Test Calculate GET & POST endpoints
   - [X] Test ValidMetrices rule (Covered in `MultiplyMatricesTest`)

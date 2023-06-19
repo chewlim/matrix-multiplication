@@ -27,15 +27,15 @@ class MultiplyMatrices
 
         $columns = count($matrixB[0]); // number of columns in matrixB
 
-        foreach ($matrixA as $row => $currentRow) {
-            for ($k = 0; $k < $columns; $k++) {
+        foreach ($matrixA as $rowIndex => $currentRow) {
+            for ($columnIndex = 0; $columnIndex < $columns; $columnIndex++) {
                 // Transform columns in matrixB at current $index to row
-                $transformed = collect($matrixB)->map(fn ($item) => $item[$k])->all();
+                $transformed = collect($matrixB)->map(fn ($item) => $item[$columnIndex])->all();
 
-                $result[$row][$k] = 0; // initialise
+                $result[$rowIndex][$columnIndex] = 0; // initialise
 
-                foreach ($transformed as $index => $item) {
-                    $result[$row][$k] += $currentRow[$index] * $item;
+                foreach ($transformed as $pointerIndex => $item) {
+                    $result[$rowIndex][$columnIndex] += $currentRow[$pointerIndex] * $item;
                 }
             }
         }
@@ -70,7 +70,7 @@ class MultiplyMatrices
      */
     protected function getCharacters(int $value): string
     {
-        // chr(65) = A
+        // ASCII 65 = A
         $balance = ($value - 1) % 26; // e.g (32 - 1) % 26  = 5
 
         $suffixLetter = chr(65 + $balance); // e.g 65 + 5 = F
