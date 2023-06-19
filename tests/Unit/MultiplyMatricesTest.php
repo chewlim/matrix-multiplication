@@ -142,6 +142,7 @@ class MultiplyMatricesTest extends TestCase
         $multiplyMatrices = new MultiplyMatrices();
 
         $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The column count in Matrix A (Current value: 3) must be equal to the row count of Matrix B (Current value: 2).');
         $multiplyMatrices->handle(
             [
                 [1, 2, 3],
@@ -154,11 +155,12 @@ class MultiplyMatricesTest extends TestCase
     }
 
     /** @test */
-    public function it_throw_validation_errors_on_if_not_every_row_in_matric_have_same_columns_count(): void
+    public function it_throw_validation_errors_on_if_not_every_row_in_matric_a_have_same_columns_count(): void
     {
         $multiplyMatrices = new MultiplyMatrices();
 
         $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Every row in Matrix A must have the same column count.');
         $multiplyMatrices->handle(
             [
                 [1, 1, 1],
@@ -166,6 +168,26 @@ class MultiplyMatricesTest extends TestCase
             ],
             [
                 [1, 1],
+                [1, 1],
+                [1, 1],
+            ]
+        );
+    }
+
+    /** @test */
+    public function it_throw_validation_errors_on_if_not_every_row_in_matric_b_have_same_columns_count(): void
+    {
+        $multiplyMatrices = new MultiplyMatrices();
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Every row in Matrix B must have the same column count.');
+        $multiplyMatrices->handle(
+            [
+                [1, 1, 1],
+                [1, 1, 1],
+            ],
+            [
+                [1, 1, 1],
                 [1, 1],
                 [1, 1],
             ]

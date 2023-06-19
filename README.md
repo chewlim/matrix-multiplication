@@ -1,9 +1,14 @@
 ## Requirements & Assumptions
 
-* Minimum PHP 7.4
+* Minimum PHP 7.4 (Assumptions)
+* Laravel with vuejs
 * PSR-12
-* Vuejs 
+* Strict type hinting
+* Unit tests
 
+## Notes
+* Maximum matrix size is limit to 50x50.
+* Minimum value of the matrix is 1.
 
 ## Todo
 
@@ -21,5 +26,5 @@
 - [ ] Make matrices strictly type?
 - [x] Unit tests
   - [x] Test Calculate GET & POST endpoints
-  - [ ] Test ValidMetrices rule
+  - [X] Test ValidMetrices rule (Covered in `MultiplyMatricesTest`)
   - [x] Test MultiplyMatrices action

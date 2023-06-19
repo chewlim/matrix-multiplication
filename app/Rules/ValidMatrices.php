@@ -35,30 +35,23 @@ class ValidMatrices implements DataAwareRule, ValidationRule
         // Get first row of the Matrix A then count the column
         $columnCountOfMatrixA = count(collect($this->data['matrix_a'])->first());
 
-        // MatrixA: Make sure every row has the same column
-        $hasSameColumnCount = collect($this->data['matrix_a'])->every(function ($value, int $key) use ($columnCountOfMatrixA) {
-            return count($value) === $columnCountOfMatrixA;
-        });
+        // Make sure every row has the same column count
+        collect(['matrix_a', 'matrix_b'])
+            ->each(function ($key) use ($fail) {
+                $columnCount = count(collect($this->data[$key])->first());
 
-        if(! $hasSameColumnCount) {
-            $fail("Every row in matrix A must have the same column count.");
-        }
+                $hasSameColumnCount = collect($this->data[$key])->every(function ($value) use ($columnCount) {
+                    return count($value) === $columnCount;
+                });
 
-        // Get first row of the Matrix A then count the column
-        $columnCountOfMatrixB = count(collect($this->data['matrix_b'])->first());
-
-        $hasSameColumnCount = collect($this->data['matrix_b'])->every(function ($value, int $key) use ($columnCountOfMatrixB) {
-            return count($value) === $columnCountOfMatrixB;
-        });
-
-        if(! $hasSameColumnCount) {
-            $fail("Every row in matrix B must have the same column count.");
-        }
-
-        $rowCountOfMatrixB = count($this->data['matrix_b']);
+                if (!$hasSameColumnCount) {
+                    $fail("Every row in " . str($key)->headline() . " must have the same column count.");
+                }
+            });
 
         // The column count in the first matrix should be equal to the row count of the second matrix
-        if($columnCountOfMatrixA !== $rowCountOfMatrixB) {
+        $rowCountOfMatrixB = count($this->data['matrix_b']);
+        if ($columnCountOfMatrixA !== $rowCountOfMatrixB) {
             $fail("The column count in Matrix A (Current value: {$columnCountOfMatrixA}) must be equal to the row count of Matrix B (Current value: {$rowCountOfMatrixB}).");
         }
     }
