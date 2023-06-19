@@ -114,7 +114,7 @@
 
                 </div>
 
-                <div v-if="resultMatrices.items.length > 0">
+                <div v-if="resultMatrices.items && resultMatrices.items.length > 0">
                     <h3 class="text-xl font-semibold pb-2">Result for multiplication of Matrix A & B</h3>
                     <div>
                         <table class="w-1/3 table-fixed border-collapse border border-slate-100 border-spacing-8 text-center">
@@ -146,20 +146,24 @@ import { reactive } from 'vue';
 
 defineProps<{}>();
 
+interface MatrixResult {
+  items: string[][]
+}
+
 const matrixA = reactive<{ row: number, column: number }>({ row: 1, column: 1 })
 const matrixB = reactive<{ row: number, column: number }>({ row: 1, column: 1 })
 
-const resultMatrices = reactive<{ items: String[][] }>({ items: [] as String[][] })
+const resultMatrices = reactive<MatrixResult>({ items: [] as string[][] })
 
 const errorMessage = ref<string>('')
 
 const form = ref<HTMLFormElement>()
 
-watch(matrixA, (newX) => {
+watch(matrixA, () => {
     resetResult();
 })
 
-watch(matrixB, (newX) => {
+watch(matrixB, () => {
     resetResult();
 })
 
@@ -178,8 +182,8 @@ const calculate = (event: Event) => {
 
     const formData = new FormData(event.target as HTMLFormElement);
 
-    axios.post('/multiply', formData)
-        .then(response => {
+    axios.post<string[][]>('/multiply', formData)
+        .then((response) => {
             resultMatrices.items = response.data
         }).catch((error: AxiosError | Error) => {
             if (axios.isAxiosError(error)) {

@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\Validator;
 
 class MultiplyMatrices
 {
+    /**
+     * Multiply two matrices.
+     *
+     * @param array   $matrixA
+     * @param array   $matrixB
+     * @param bool $returnCharacters
+     *
+     * @return array
+     */
     public function handle(array $matrixA, array $matrixB, bool $returnCharacters = false): array
     {
         $this->validate([
@@ -20,7 +29,8 @@ class MultiplyMatrices
 
         foreach ($matrixA as $row => $currentRow) {
             for ($k = 0; $k < $columns; $k++) {
-                $transformed = $this->transformColumns($k, $matrixB);
+                // Transform columns in matrixB at current $index to row
+                $transformed = collect($matrixB)->map(fn ($item) => $item[$k])->all();
 
                 $result[$row][$k] = 0; // initialise
 
@@ -34,7 +44,11 @@ class MultiplyMatrices
     }
 
     /**
-     * @param array $data Two dimenstional array
+     * Traansform the numbers to characters representation.
+     *
+     * @param array $data   The array of arrays.
+     *
+     * @return array
      */
     protected function transformToCharacters(array $data): array
     {
@@ -47,28 +61,27 @@ class MultiplyMatrices
         return $result;
     }
 
-    protected function getCharacters(int $value)
+    /**
+     * Convert the value to character similar to excel columns. e.g 1 => A, 26 => Z, 27 => AA, 28 => AB
+     *
+     * @param int $value The number to be converted.
+     *
+     * @return string
+     */
+    protected function getCharacters(int $value): string
     {
         // chr(65) = A
         $balance = ($value - 1) % 26; // e.g (32 - 1) % 26  = 5
 
         $suffixLetter = chr(65 + $balance); // e.g 65 + 5 = F
 
-        $cycle = intval(($value - 1) / 26); // e.g. (32 - 1) / 26 = 1.19
+        $cycle = intval(($value - 1) / 26); // e.g. (32 - 1) / 26 = 1.19 => 1
 
         if ($cycle > 0) {
             return $this->getCharacters($cycle) . $suffixLetter;
         }
 
         return $suffixLetter;
-    }
-
-    /**
-     * Transform columns in matrixB at current $index to single dimension array
-     */
-    protected function transformColumns(int $index, array $matrixB): array
-    {
-        return collect($matrixB)->map(fn ($item) => $item[$index])->all();
     }
 
     /**
@@ -105,7 +118,14 @@ class MultiplyMatrices
     }
 
 
-    public function validate(array $data): array
+    /**
+     * Helper function to validate incoming data
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function validate(array $data): array
     {
         return Validator::make($data, $this->rules(), $this->messages())
             ->validate();
