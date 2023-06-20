@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Validator;
 
 class MultiplyMatrices
 {
+    public function __construct(protected bool $returnCharacters = false)
+    {
+
+    }
+
     /**
      * Multiply two matrices.
      *
@@ -16,7 +21,7 @@ class MultiplyMatrices
      *
      * @return array
      */
-    public function handle(array $matrixA, array $matrixB, bool $returnCharacters = false): array
+    public function handle(array $matrixA, array $matrixB): array
     {
         $this->validate([
             'matrix_a' => $matrixA,
@@ -40,13 +45,13 @@ class MultiplyMatrices
             }
         }
 
-        return $returnCharacters ? $this->transformToCharacters($result) : $result;
+        return $this->returnCharacters ? $this->transformToCharacters($result) : $result;
     }
 
     /**
      * Traansform the numbers to characters representation.
      *
-     * @param array $data   The array of arrays.
+     * @param array $data   The 2 dimensional array.
      *
      * @return array
      */
