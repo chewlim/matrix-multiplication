@@ -10,6 +10,16 @@
 * Maximum matrix size is limit to 50x50.
 * Minimum value of the matrix is 1.
 
+## Setup and installation
+  
+* Run `composer install`
+
+## Start development server
+
+* Run `php artisan serve`
+* Run `yarn dev`
+
+
 ## Todo
 
 - [x] Setup new Laravel project 
@@ -28,3 +38,4 @@
   - [x] Test Calculate GET & POST endpoints
   - [X] Test ValidMetrices rule (Covered in `MultiplyMatricesTest`)
   - [x] Test MultiplyMatrices action
+
