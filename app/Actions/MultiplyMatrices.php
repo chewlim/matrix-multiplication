@@ -2,16 +2,15 @@
 
 namespace App\Actions;
 
+use App\Data\MatrixResultCell;
+use App\Data\MatrixResultCellCollection;
+use App\Data\MatrixResultRow;
+use App\Data\MatrixResultRowCollection;
 use App\Rules\ValidMatrices;
 use Illuminate\Support\Facades\Validator;
 
 class MultiplyMatrices
 {
-    public function __construct(protected bool $returnCharacters = false)
-    {
-
-    }
-
     /**
      * Multiply two matrices.
      *
@@ -19,74 +18,49 @@ class MultiplyMatrices
      * @param array   $matrixB
      * @param bool $returnCharacters
      *
-     * @return array
+     * @return MatrixResultRowCollection
      */
-    public function handle(array $matrixA, array $matrixB): array
+    public function handle(array $matrixA, array $matrixB): MatrixResultRowCollection
     {
         $this->validate([
             'matrix_a' => $matrixA,
             'matrix_b' => $matrixB,
         ]);
 
-        $result = [];
-
         $columns = count($matrixB[0]); // number of columns in matrixB
 
-        foreach ($matrixA as $rowIndex => $currentRow) {
-            for ($columnIndex = 0; $columnIndex < $columns; $columnIndex++) {
-                // Transform columns in matrixB at current $index to row
-                $transformed = collect($matrixB)->map(fn ($item) => $item[$columnIndex])->all();
+        $rows = collect($matrixA)->map(function ($currentRow) use ($matrixB, $columns) {
 
-                $result[$rowIndex][$columnIndex] = 0; // initialise
+            $cells = collect(range(0, $columns - 1))
+                ->map(function ($columnIndex) use ($matrixB, $currentRow) {
+                    $cellValue = $this->calculateCellValue($matrixB, $columnIndex, $currentRow);
+                    return new MatrixResultCell($cellValue);
+                });
 
-                foreach ($transformed as $pointerIndex => $item) {
-                    $result[$rowIndex][$columnIndex] += $currentRow[$pointerIndex] * $item;
-                }
-            }
-        }
+            $matrixCells = new MatrixResultCellCollection($cells->all());
 
-        return $this->returnCharacters ? $this->transformToCharacters($result) : $result;
+            return new MatrixResultRow($matrixCells);
+        });
+
+        return new MatrixResultRowCollection($rows->all());
     }
 
     /**
-     * Traansform the numbers to characters representation.
-     *
-     * @param array $data   The 2 dimensional array.
-     *
-     * @return array
+     * Helper function to calculate multiply of matrix for provided row and column.
      */
-    protected function transformToCharacters(array $data): array
+    protected function calculateCellValue(array $matrixB, int $columnIndex, array $row): int
     {
-        $result = [];
-        for ($row = 0; $row < count($data); $row++) {
-            for ($col = 0; $col < count($data[$row]); $col++) {
-                $result[$row][$col] = $this->getCharacters($data[$row][$col]);
-            }
-        }
-        return $result;
-    }
+        // Transform columns in matrixB at current $index to row
+        $transformed = collect($matrixB)
+            ->map(fn ($item) => $item[$columnIndex])
+            ->all();
 
-    /**
-     * Convert the value to character similar to excel columns. e.g 1 => A, 26 => Z, 27 => AA, 28 => AB
-     *
-     * @param int $value The number to be converted.
-     *
-     * @return string
-     */
-    protected function getCharacters(int $value): string
-    {
-        // ASCII 65 = A
-        $balance = ($value - 1) % 26; // e.g (32 - 1) % 26  = 5
-
-        $suffixLetter = chr(65 + $balance); // e.g 65 + 5 = F
-
-        $cycle = intval(($value - 1) / 26); // e.g. (32 - 1) / 26 = 1.19 => 1
-
-        if ($cycle > 0) {
-            return $this->getCharacters($cycle) . $suffixLetter;
+        $cellValue = 0;
+        foreach ($transformed as $pointerIndex => $item) {
+            $cellValue += $row[$pointerIndex] * $item;
         }
 
-        return $suffixLetter;
+        return $cellValue;
     }
 
     /**
@@ -101,7 +75,7 @@ class MultiplyMatrices
             'matrix_a.*' => ['required', 'array', 'max:50'], // column
             'matrix_a.*.*' => ['required', 'integer', 'gt:0'], // value
             'matrix_b' => ['required', 'array', 'max:50', new ValidMatrices()],
-            'matrix_b.*' => ['required', 'array','max:50'],
+            'matrix_b.*' => ['required', 'array', 'max:50'],
             'matrix_b.*.*' => ['required', 'integer', 'gt:0'],
         ];
     }
@@ -116,7 +90,6 @@ class MultiplyMatrices
         return [
             'matrix_a.max' => "The Matrix A must not have more than :max rows.",
             'matrix_a.*.max' => "The Matrix A must not have more than :max columns.",
-
             'matrix_b.max' => "The Matrix B must not have more than :max rows.",
             'matrix_b.*.max' => "The Matrix B field must not have more than :max columns.",
         ];

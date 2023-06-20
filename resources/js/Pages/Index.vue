@@ -119,8 +119,8 @@
                     <div>
                         <table class="w-1/3 table-fixed border-collapse border border-slate-100 border-spacing-8 text-center">
                             <tr v-for="row in resultMatrices.items">
-                                <td class="border border-slate-300" v-for="item in row">
-                                    {{ item }}
+                                <td class="border border-slate-300" v-for="item in row" :title="`${item.value}`">
+                                    <span>{{ item.characters }}</span>
                                 </td>
                             </tr>
                         </table>
@@ -146,14 +146,19 @@ import { reactive } from 'vue';
 
 defineProps<{}>();
 
-interface MatrixResult {
-  items: string[][]
+type MatrixResultCell = {
+    value: number,
+    characters: string
+}
+
+type MatrixResult = {
+  items: MatrixResultCell[][]
 }
 
 const matrixA = reactive<{ row: number, column: number }>({ row: 1, column: 1 })
 const matrixB = reactive<{ row: number, column: number }>({ row: 1, column: 1 })
 
-const resultMatrices = reactive<MatrixResult>({ items: [] as string[][] })
+const resultMatrices = reactive<MatrixResult>({ items: [] as MatrixResultCell[][] })
 
 const errorMessage = ref<string>('')
 
@@ -182,7 +187,7 @@ const calculate = (event: Event) => {
 
     const formData = new FormData(event.target as HTMLFormElement);
 
-    axios.post<string[][]>('/multiply', formData)
+    axios.post<MatrixResultCell[][]>('/multiply', formData)
         .then((response) => {
             resultMatrices.items = response.data
         }).catch((error: AxiosError | Error) => {

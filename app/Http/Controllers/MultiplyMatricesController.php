@@ -22,6 +22,6 @@ class MultiplyMatricesController extends Controller
         $result = (new MultiplyMatrices(true))
             ->handle($validated['matrix_a'], $validated['matrix_b']);
 
-        return response()->json($result);
+        return response()->json($result->toArray());
     }
 }

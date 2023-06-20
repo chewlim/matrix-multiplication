@@ -32,7 +32,16 @@ class MultiplyMatricesControllerTest extends TestCase
         ])
             ->assertSuccessful()
             ->assertExactJson([
-                ['AF', 'AX']
+                [
+                    [
+                        'value' => 32,
+                        'characters' => 'AF'
+                    ],
+                    [
+                        'value' => 50,
+                        'characters' => 'AX'
+                    ]
+                ]
             ]);
     }
 
