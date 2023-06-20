@@ -124,16 +124,27 @@ class MultiplyMatricesTest extends TestCase
             $this->assertEquals($testCase['expectedResult'], $result);
         });
     }
+    
 
     /** @test */
     public function it_can_multiple_two_matrices_and_return_result_in_characters(): void
     {
-        $multiplyMatrices = new MultiplyMatrices();
+        $multiplyMatrices = new MultiplyMatrices(true);
 
         $this->charactersAsResultTestCases->each(function ($testCase) use ($multiplyMatrices) {
-            $result = $multiplyMatrices->handle($testCase['matrix_a'], $testCase['matrix_b'], true);
+            $result = $multiplyMatrices->handle($testCase['matrix_a'], $testCase['matrix_b']);
             $this->assertEquals($testCase['expectedResult'], $result);
         });
+    }
+
+    /** @test */
+    public function it_throw_validation_errors_on_empty_matrices(): void
+    {
+        $multiplyMatrices = new MultiplyMatrices();
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The matrix a field is required. (and 1 more error)');
+        $multiplyMatrices->handle([], []);
     }
 
     /** @test */
